@@ -30,6 +30,24 @@ jobs:
               --template-file create_ec2.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-west-2
+  
+  ConfigureInfra:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: [73:55:04:ec:10:1b:1b:a0:51:22:92:22:72:c9:64:35]
+      
+      - run:
+          name: Install Ansible
+          command: |
+            apk add --update ansible
+      
+      - run:
+          name: Configure EC2 Instance
+          command: |
+            ansible-playbook -i inventory main-remote.yml 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -37,3 +55,5 @@ workflows:
     jobs:
       #- say-hello
       - InfraCreation
+      - ConfigureInfra:
+          requires: InfraCreation
