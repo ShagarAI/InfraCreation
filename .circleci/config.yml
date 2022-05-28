@@ -56,4 +56,5 @@ workflows:
       #- say-hello
       - InfraCreation
       - ConfigureInfra:
-          requires: InfraCreation
+          - requires:
+              - InfraCreation
