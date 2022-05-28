@@ -43,7 +43,15 @@ jobs:
           name: Install Ansible
           command: |
             apk add --update ansible
-      
+     
+      - run:
+          name: List Created EC2 instances and save the IPAddress to inventory file. 
+          command: |
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Project,Values=udacity" \
+              --output text >> inventory
+
       - run:
           name: Configure EC2 Instance
           command: |
