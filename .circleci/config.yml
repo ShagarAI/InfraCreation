@@ -39,6 +39,10 @@ jobs:
               --filters "Name=tag:Project,Values=udacity" \
               --output text >> inventory
       
+      - run:
+          name: Adding required tar utility
+          command: |
+            apt install tar
       - persist_to_workspace:
           root: /tmp/workshare
           paths:
