@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Adding required tar utility
           command: |
-            apt install tar
+            yum install tar
       - persist_to_workspace:
           root: /tmp/workshare
           paths:
