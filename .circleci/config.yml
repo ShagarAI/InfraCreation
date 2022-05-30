@@ -44,7 +44,7 @@ jobs:
           command: |
             yum install -y tar gzip 
       - persist_to_workspace:
-          root: /tmp/workshare
+          root: ./
           paths:
             - inventory
  
@@ -62,12 +62,12 @@ jobs:
             apk add --update ansible
      
       - attach_workspace:
-          at: /tmp/workshare
+          at: /tmp
      
       - run:
           name: Configure EC2 Instance
           command: |
-            ansible-playbook -i /tmp/workshare/inventory main-remote.yml 
+            ansible-playbook -i /tmp/inventory main-remote.yml 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
