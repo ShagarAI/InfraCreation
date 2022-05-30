@@ -47,7 +47,8 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udacity" \
               --output text >> inventory
-          
+      - run:
+          name: Output inventory file contents    
           command: |
             cat inventory
       
