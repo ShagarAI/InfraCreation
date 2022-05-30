@@ -30,17 +30,9 @@ jobs:
               --template-file create_ec2.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-west-2
-      
+
       - run:
-          name: Populate Inventory
-          command: |
-             aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Project,Values=udacity" \
-              --output text >> inventory
-      
-      - run:
-          name: Adding required tar utility
+          name: Installing required workspace utilities (tar,gzip)
           command: |
             yum install -y tar gzip 
       - persist_to_workspace:
@@ -48,6 +40,17 @@ jobs:
           paths:
             - inventory
  
+      - run:
+          name: Populate Inventory
+          command: |
+             aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Project,Values=udacity" \
+              --output text >> inventory
+          
+          command: |
+            cat inventory
+      
   ConfigureInfra:
     docker:
       - image: python:3.7-alpine3.11
