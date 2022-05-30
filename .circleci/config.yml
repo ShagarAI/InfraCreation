@@ -38,7 +38,7 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - inventory
+            - ./inventory
  
       - run:
           name: Populate Inventory
@@ -46,11 +46,11 @@ jobs:
              aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udacity" \
-              --output text >> inventory
+              --output text >> ./inventory
       - run:
           name: Output inventory file contents    
           command: |
-            cat inventory
+            cat ./inventory
       
   ConfigureInfra:
     docker:
