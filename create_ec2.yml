@@ -12,7 +12,11 @@ Resources:
       # Change this, as applicable to you
       # You may need to find out what instance types are available in your region - use https://cloud-images.ubuntu.com/locator/ec2/
       ImageId: ami-074251216af698218
-      InstanceType: t2.micro
+
+    Tags:
+     - Key: Project
+       Value: Udacity     InstanceType: t2.micro
+
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -22,6 +26,4 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: 0.0.0.0/0 
-  Tags:
-    - Key: Project
-      Value: Udacity
+
