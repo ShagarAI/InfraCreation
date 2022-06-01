@@ -37,9 +37,9 @@ jobs:
             yum install -y tar gzip 
             mkdir /tmp/workshare
       - persist_to_workspace:
-          root: /tmp
+          root: /tmp/workshare
           paths:
-            - /tmp/workshare
+            - ./inventory*
  
       - run:
           name: Populate Inventory
