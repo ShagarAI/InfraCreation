@@ -41,18 +41,19 @@ jobs:
           command: |
             mkdir /tmp/workshare
 
-      - persist_to_workspace:
-          root: /tmp/workshare
-          paths:
-            - inventory*
- 
       - run:
           name: Populate Inventory
           command: |
              aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udacity" \
-              --output text > /tmp/workshare/inventory
+              --output text >> /tmp/workshare/inventory
+
+      - persist_to_workspace:
+          root: /tmp/workshare
+          paths:
+            - inventory*
+ 
       - run:
           name: Output inventory file contents    
           command: |
