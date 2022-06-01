@@ -49,15 +49,16 @@ jobs:
               --filters "Name=tag:Project,Values=udacity" \
               --output text >> /tmp/workshare/inventory
 
+      - run:
+          name: Output inventory file contents    
+          command: |
+            cat /tmp/workshare/inventory
+
       - persist_to_workspace:
           root: /tmp/workshare
           paths:
             - inventory*
  
-      - run:
-          name: Output inventory file contents    
-          command: |
-            cat /tmp/workshare/inventory
       
   ConfigureInfra:
     docker:
