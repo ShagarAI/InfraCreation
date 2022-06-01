@@ -35,11 +35,16 @@ jobs:
           name: Installing required workspace utilities (tar,gzip)
           command: |
             yum install -y tar gzip 
+
+      - run:
+          name: Creating workspace directory.
+          command: |
             mkdir /tmp/workshare
+
       - persist_to_workspace:
           root: /tmp/workshare
           paths:
-            - ./inventory*
+            - inventory*
  
       - run:
           name: Populate Inventory
