@@ -35,10 +35,11 @@ jobs:
           name: Installing required workspace utilities (tar,gzip)
           command: |
             yum install -y tar gzip 
+            mkdir /tmp/workshare
       - persist_to_workspace:
           root: ./
           paths:
-            - ./inventory
+            - /tmp/workshare
  
       - run:
           name: Populate Inventory
@@ -46,11 +47,11 @@ jobs:
              aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udacity" \
-              --output text >> ./inventory
+              --output text > /tmp/workshare/inventory
       - run:
           name: Output inventory file contents    
           command: |
-            cat ./inventory
+            cat /tmp/workshare/inventory
       
   ConfigureInfra:
     docker:
