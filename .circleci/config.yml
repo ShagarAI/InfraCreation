@@ -2,6 +2,18 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+commands:
+  # Exercise - Rollback
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+          # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -59,7 +71,6 @@ jobs:
           paths:
             - inventory*
  
-      
   ConfigureInfra:
     docker:
       - image: python:3.7-alpine3.11
@@ -87,7 +98,7 @@ jobs:
       #- image: alpine:latest
     steps:
       #- run: apk add --update curl
-      - run: yum install -y curl
+      #- run: yum install -y curl
 
       #- run:
       #    name: Get EC2 instance URL
@@ -99,21 +110,24 @@ jobs:
 
       - run:
           name: smoke test
-          command: |
-            URL="http://"
-            URL+=`aws ec2 describe-instances \
-                   --query 'Reservations[*].Instances[*].PublicDnsName' \
-                   --filters "Name=tag:Project,Values=Udacity" \
-                   --output text`
-            URL+=":3000"
+          command: return 1
+          #command: |
+          #  URL="http://"
+          #  URL+=`aws ec2 describe-instances \
+          #         --query 'Reservations[*].Instances[*].PublicDnsName' \
+          #         --filters "Name=tag:Project,Values=Udacity" \
+          #         --output text`
+          #  URL+=":3000"
 
-            # Test if website exists
-            if curl -s --head ${URL} 
-            then
-              echo 0
-            else
-              echo 1
-            fi
+          #  # Test if website exists
+          #  if curl -s --head ${URL} 
+          #  then
+          #    echo 0
+          #  else
+          #    echo 1
+          #  fi
+       
+      - destroy_environment
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -125,4 +139,6 @@ workflows:
       - ConfigureInfra:
           requires:
             - InfraCreation
-      - smoke_test
+      - smoke_test:
+          requires:
+            - InfraCreation
