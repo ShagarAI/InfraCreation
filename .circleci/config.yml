@@ -150,4 +150,4 @@ workflows:
             - InfraCreation
       - smoke_test:
           requires:
-            - InfraCreation
+            - ConfigureInfra
