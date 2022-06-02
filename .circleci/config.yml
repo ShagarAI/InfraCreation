@@ -80,6 +80,41 @@ jobs:
           name: Configure EC2 Instance
           command: |
             ansible-playbook -i /tmp/workshare/inventory main-remote.yml 
+
+  smoke_test:
+    docker:
+      - image: amazon/aws-cli
+      #- image: alpine:latest
+    steps:
+      #- run: apk add --update curl
+      - run: yum install -y curl
+
+      #- run:
+      #    name: Get EC2 instance URL
+      #    command: |
+      #      aws ec2 describe-instances \
+      #        --query 'Reservations[*].Instances[*].PublicDnsName' \
+      #        --filters "Name=tag:Project,Values=Udacity" \
+      #        --output text
+
+      - run:
+          name: smoke test
+          command: |
+            URL="http://"
+            URL+=`aws ec2 describe-instances \
+                   --query 'Reservations[*].Instances[*].PublicDnsName' \
+                   --filters "Name=tag:Project,Values=Udacity" \
+                   --output text`
+            URL+=":3000"
+
+            # Test if website exists
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -90,3 +125,4 @@ workflows:
       - ConfigureInfra:
           requires:
             - InfraCreation
+      - smoke_test
