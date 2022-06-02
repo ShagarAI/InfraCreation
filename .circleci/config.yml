@@ -10,7 +10,7 @@ commands:
           name: Destroy environment
           # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
-          when: on_fail
+
           command: |
             echo ${CIRCLE_WORKFLOW_ID:0:5} && \
             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
@@ -62,6 +62,11 @@ jobs:
               --filters "Name=tag:Project,Values=Udacity" \
               --output text >> /tmp/workshare/inventory
 
+      - run: return 1
+
+      - destroy_environment:
+          when: on_fail
+
       - run:
           name: Output inventory file contents    
           command: |
@@ -71,6 +76,7 @@ jobs:
           root: /tmp/workshare
           paths:
             - inventory*
+       
  
   ConfigureInfra:
     docker:
@@ -111,24 +117,24 @@ jobs:
 
       - run:
           name: smoke test
-          command: return 1
-          #command: |
-          #  URL="http://"
-          #  URL+=`aws ec2 describe-instances \
-          #         --query 'Reservations[*].Instances[*].PublicDnsName' \
-          #         --filters "Name=tag:Project,Values=Udacity" \
-          #         --output text`
-          #  URL+=":3000"
+          command: |
+            URL="http://"
+            URL+=`aws ec2 describe-instances \
+                   --query 'Reservations[*].Instances[*].PublicDnsName' \
+                   --filters "Name=tag:Project,Values=Udacity" \
+                   --output text`
+            URL+=":3000"
 
-          #  # Test if website exists
-          #  if curl -s --head ${URL} 
-          #  then
-          #    echo 0
-          #  else
-          #    echo 1
-          #  fi
+            # Test if website exists
+            if curl -s --head ${URL} 
+            then
+              echo 0
+            else
+              echo 1
+            fi
        
-      - destroy_environment
+      - destroy_environment:
+          when: on_fail
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
