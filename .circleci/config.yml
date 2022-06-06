@@ -171,7 +171,7 @@ jobs:
             --no-paginate --output text > ~/PipelineID.txt
       - persist_to_workspace:
           root: ~/
-          paths: 
+          paths:
             - PipelineID.txt 
 
   # Executes the cloudfront.yml template that will modify the existing CloudFront Distribution, This should change target:
@@ -230,4 +230,4 @@ workflows:
       - cleanup_old_frontend:
           requires:
             - get_last_deployment_id
-            _ promote_to_production
+            - promote_to_production
