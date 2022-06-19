@@ -153,8 +153,8 @@ jobs:
             --template-file ./S3Bucket/bucket.yml \
             --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
-      # Uncomment the step below if you wish to upload all contents of the [ S3Sync ] directory to the S3 bucket
-      - run: aws s3 sync ./S3Bucket/S3Sync s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
+      # Uncomment the step below if you wish to upload all contents of the [ S3Sync_updated ] directory to the S3 bucket
+      - run: aws s3 sync ./S3Bucket/S3Sync_updated s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
 
   # Fetch and save the pipeline ID (bucket ID) responsible for the last release.
   get_last_deployment_id:
@@ -187,7 +187,7 @@ jobs:
           command: |
             aws cloudfront create-invalidation --distribution-id distribution_ID --paths "/*" && \
             aws cloudformation deploy \
-            --template-file ./S3Bucket/cloudfront.yml \
+            --template-file S3Bucket/cloudfront.yml \
             --stack-name production-distro \
             --parameter-overrides PipelineID="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
 

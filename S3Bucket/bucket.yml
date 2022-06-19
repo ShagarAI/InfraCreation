@@ -11,8 +11,8 @@ Resources:
       BucketName: !Sub "${MyBucketName}"
       AccessControl: PublicRead
       WebsiteConfiguration:
-        IndexDocument: ./S3Sync/index.html
-        ErrorDocument: ./S3Sync/error.html
+        IndexDocument: S3Sync_updated/index.html
+        ErrorDocument: S3Sync_updated/error.html
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
