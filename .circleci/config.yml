@@ -213,17 +213,19 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
-    jobs:
+  #say-hello-workflow:
+  #  jobs:
       #- say-hello
-      - InfraCreation
-      - ConfigureInfra:
-          requires:
-            - InfraCreation
-      - smoke_test:
-          requires:
-            - ConfigureInfra
-      
+      #- InfraCreation
+      #- ConfigureInfra:
+      #    requires:
+      #      - InfraCreation
+      #- smoke_test:
+      #    requires:
+      #      - ConfigureInfra
+  
+  static-page-S3-workflow
+    jobs:
       - create_and_deploy_frontend
       - promote_to_production:
           requires:
