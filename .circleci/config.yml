@@ -224,7 +224,7 @@ workflows:
       #    requires:
       #      - ConfigureInfra
   
-  static-page-S3-workflow
+  static-page-S3-workflow:
     jobs:
       - create_and_deploy_frontend
       - promote_to_production:
